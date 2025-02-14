@@ -3,16 +3,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>优雅导航</title>
-  <!-- Google字体 -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" />
-  <!-- React与ReactDOM -->
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <!-- Babel -->
   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- react-beautiful-dnd -->
   <script src="https://unpkg.com/react-beautiful-dnd@13.1.0/dist/react-beautiful-dnd.min.js"></script>
   <style>
     body {
@@ -25,7 +20,6 @@
       from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
     }
-    /* 自定义滚动条 */
     ::-webkit-scrollbar {
       width: 6px;
     }
@@ -43,10 +37,10 @@
   <script type="text/babel">
     const { DragDropContext, Droppable, Draggable } = window.ReactBeautifulDnd;
 
-    // 公共卡片样式，取消缩放和触发模糊，仅保留阴影和背景色变化
+    // 公共卡片样式：取消缩放、模糊，保留阴影及 hover 时轻微颜色变化
     const cardClasses = "bg-white/90 backdrop-blur-sm rounded-xl shadow p-6 fade-in hover:shadow-xl hover:bg-gray-100 transition-colors";
 
-    // 辅助：重新排序函数
+    // 重新排序函数
     const reorder = (list, startIndex, endIndex) => {
       const result = Array.from(list);
       const [removed] = result.splice(startIndex, 1);
@@ -54,7 +48,7 @@
       return result;
     };
 
-    // 分类索引组件（增加过滤查询功能，UI优化）
+    // 分类索引组件（含过滤查询）
     function CategoryIndex({ categories }) {
       const [filter, setFilter] = React.useState('');
       const handleClick = id => {
@@ -88,7 +82,7 @@
       );
     }
 
-    // 天气和每日一句组件（默认武汉天气）
+    // 天气与每日一句组件（默认武汉天气）
     function ExtraWidgets() {
       const [time, setTime] = React.useState(new Date());
       const [quote, setQuote] = React.useState(null);
@@ -184,8 +178,7 @@
       };
 
       React.useEffect(() => {
-        if(darkMode) document.documentElement.classList.add("dark");
-        else document.documentElement.classList.remove("dark");
+        darkMode ? document.documentElement.classList.add("dark") : document.documentElement.classList.remove("dark");
       }, [darkMode]);
 
       const handleSearch = () => {
@@ -305,7 +298,7 @@
         )
       };
 
-      // 渲染分类列表，管理模式下支持拖拽排序
+      // 渲染分类列表，管理模式下启用拖拽排序
       const renderCategories = () => {
         if (managementMode) {
           return (
@@ -321,7 +314,7 @@
                               {editingCategoryId === category.id ?
                                 <input
                                   value={editingCategoryName}
-                                  onChange={handleCategoryNameChange}
+                                  onChange={e => setEditingCategoryName(e.target.value)}
                                   onBlur={() => finishEditing(category.id)}
                                   onKeyDown={(e) => handleKeyDown(e, category.id)}
                                   autoFocus
@@ -342,7 +335,9 @@
                             <div className="space-y-3">
                               {category.links.map(link => (
                                 <div key={link.id} className="flex items-center justify-between">
-                                  <a href={link.url} target="_blank" rel="noopener noreferrer" className="block py-2 px-4 rounded-md w-full bg-gray-50 hover:bg-gray-100 transition-colors shadow-sm">
+                                  <a href={link.url} target="_blank" rel="noopener noreferrer" 
+                                    className="block py-2 px-4 rounded-md w-full bg-gray-50 shadow-sm transition-colors hover:bg-gradient-to-r hover:from-blue-200 hover:to-green-200"
+                                  >
                                     {link.title}
                                   </a>
                                   <button onClick={() => handleDeleteLink(category.id, link.id)} className="ml-2 p-2 bg-red-300 hover:bg-red-400 rounded transition-colors">
@@ -375,17 +370,14 @@
                     {editingCategoryId === category.id ?
                       <input
                         value={editingCategoryName}
-                        onChange={handleCategoryNameChange}
+                        onChange={e => setEditingCategoryName(e.target.value)}
                         onBlur={() => finishEditing(category.id)}
                         onKeyDown={(e) => handleKeyDown(e, category.id)}
                         autoFocus
                         className="text-2xl font-semibold text-gray-800 bg-transparent border-b border-blue-300 focus:outline-none"
                       />
                       :
-                      <h2
-                        className="text-2xl font-semibold text-gray-800"
-                        onDoubleClick={() => handleCategoryDoubleClick(category)}
-                      >
+                      <h2 className="text-2xl font-semibold text-gray-800" onDoubleClick={() => handleCategoryDoubleClick(category)}>
                         {category.name}
                       </h2>
                     }
@@ -398,7 +390,9 @@
                   <div className="space-y-3">
                     {category.links.map(link => (
                       <div key={link.id} className="flex items-center justify-between">
-                        <a href={link.url} target="_blank" rel="noopener noreferrer" className="block py-2 px-4 rounded-md w-full bg-gray-50 hover:bg-gray-100 transition-colors shadow-sm">
+                        <a href={link.url} target="_blank" rel="noopener noreferrer" 
+                          className="block py-2 px-4 rounded-md w-full bg-gray-50 shadow-sm transition-colors hover:bg-gradient-to-r hover:from-blue-200 hover:to-green-200"
+                        >
                           {link.title}
                         </a>
                         {managementMode && (
